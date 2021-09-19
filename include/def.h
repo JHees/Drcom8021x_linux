@@ -14,7 +14,7 @@
 #include <vector>
 
 
-#define configpath "/home/hennsun/workspace/Drcom8021x/Debug/Drcom8021x.conf"
+#define configpath "./Drcom8021x.conf"
 
 struct drcom_config {
     struct config_general {
