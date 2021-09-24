@@ -19,7 +19,6 @@ public:
 	void offline();
 	virtual ~function();
 
-
 private:
 	drcom_config conf;
 	std::string conf_path = configpath;

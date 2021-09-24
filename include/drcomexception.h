@@ -13,8 +13,6 @@
 #include <string.h>
 using namespace std;
 class drcomexception{
-
-
 public:
 	drcomexception(const std::string& message) : message(message) { }
 	drcomexception(const std::string& message, int err) {
@@ -28,7 +26,6 @@ public:
 
 private:
 	std::string message;
-
 
 };
 
