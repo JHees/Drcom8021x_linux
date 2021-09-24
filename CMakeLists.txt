@@ -24,7 +24,6 @@ target_link_libraries(drcom
     ${PCAP_LIBRARY}
 )
 
-message(${CMAKE_INSTALL_BINDIR})
 # install target
 # debug install
 install(TARGETS drcom
