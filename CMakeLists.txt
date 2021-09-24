@@ -17,16 +17,16 @@ list(FILTER SRC_FILE INCLUDE REGEX "[\\w]*.(cpp|c)")
 list(FILTER SRC_FILE EXCLUDE REGEX "main.(cpp|c)")
 add_library(${PROJECT_NAME} ${SRC_FILE})
 
-add_executable(drcom ./src/main.cpp)
+add_executable(drcom8021x ./src/main.cpp)
 
-target_link_libraries(drcom
+target_link_libraries(drcom8021x
     ${PROJECT_NAME}
     ${PCAP_LIBRARY}
 )
 
 # install target
 # debug install
-install(TARGETS drcom
+install(TARGETS drcom8021x
     CONFIGURATIONS Debug
     RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/debug/bin
     LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/debug/lib
@@ -42,7 +42,7 @@ install(FILES drcom8021x.conf
     DESTINATION ${PROJECT_SOURCE_DIR}/debug/conf
 )
 
-install(TARGETS drcom
+install(TARGETS drcom8021x
     CONFIGURATIONS Release
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
