@@ -1,0 +1,15 @@
+[Unit]
+Description=Drcom client service
+Requires=Network.target
+After=network.target
+Before=create_ap.service
+
+[Service]
+ExecStart=/usr/bin/drcom8021x
+Type=simple
+KillSignal=SIGINT
+Restart=true
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
