@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.4)
 project(Drcom8021X)
+
+include(GNUInstallDirs)
+
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(PCAP REQUIRED)
@@ -20,3 +23,51 @@ target_link_libraries(drcom
     ${PROJECT_NAME}
     ${PCAP_LIBRARY}
 )
+
+message(${CMAKE_INSTALL_BINDIR})
+# install target
+# debug install
+install(TARGETS drcom
+    CONFIGURATIONS Debug
+    RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/debug/bin
+    LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/debug/lib
+    ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/debug/lib
+)
+install(FILES drcom8021x.service
+    CONFIGURATIONS Debug
+    DESTINATION ${PROJECT_SOURCE_DIR}/debug/service
+
+)
+install(FILES drcom8021x.conf
+    CONFIGURATIONS Debug
+    DESTINATION ${PROJECT_SOURCE_DIR}/debug/conf
+)
+
+install(TARGETS drcom
+    CONFIGURATIONS Release
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+# release install
+install(FILES drcom8021x.service
+    CONFIGURATIONS Release
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/system/drcom8021x.service
+)
+
+install(FILES drcom8021x.conf
+    CONFIGURATIONS Release
+    TYPE SYSCONF
+)
+
+
+# uninstall target
+if(NOT TARGET uninstall)
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+  add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
