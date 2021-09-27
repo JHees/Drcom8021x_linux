@@ -45,12 +45,6 @@ struct drcom_config {
         uint32_t udp_timeout;
     } local;
 
-    struct config_fake {
-        bool enable;
-        std::vector<uint8_t> mac;
-        std::string username;
-        std::string password;
-    } fake;
 } ;
 
 
