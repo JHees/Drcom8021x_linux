@@ -5,7 +5,7 @@ After=network.target
 Before=create_ap.service
 
 [Service]
-ExecStart=/usr/bin/drcom8021x
+ExecStart=/usr/bin/drcom8021x --conf /etc/drcom8021x.conf
 Type=simple
 KillSignal=SIGINT
 Restart=true

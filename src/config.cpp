@@ -33,7 +33,6 @@ int config::read(string path, drcom_config *conf)
     try
     {
         boost::property_tree::ini_parser::read_ini(path, pt);
-        (*conf).general.mode = pt.get<int>("General.Mode");
         (*conf).general.username = pt.get<std::string>("General.UserName");
         (*conf).general.password = pt.get<std::string>("General.PassWord");
         (*conf).local.nic = pt.get<std::string>("Local.NIC");
@@ -44,7 +43,6 @@ int config::read(string path, drcom_config *conf)
         return EBADF;
     }
 
-    (*conf).general.auto_online = pt.get("General.AutoOnline", true);
     (*conf).general.auto_redial = pt.get("General.AutoRedial", true);
 
     (*conf).remote.ip = pt.get("Remote.IP", "172.25.8.4");
@@ -56,23 +54,17 @@ int config::read(string path, drcom_config *conf)
         (*conf).remote.mac = str_mac_to_vec(pt.get("Remote.MAC", "00:1a:a9:c3:3a:59"));
     }
 
-    (*conf).local.hostname = pt.get("Local.HostName", "Drcom8021X for HITwh");
-    
-    //#define MAJOR_VERSION "v0.8"
-    (*conf).local.kernel_version = pt.get("Local.KernelVersion", "v0.8");
-
     (*conf).local.eap_timeout = pt.get("Local.EAPTimeout", 1000);
     (*conf).local.udp_timeout = pt.get("Local.UDPTimeout", 2000);
 
-    SYS_LOG_DBG("General.UserName = " << (*conf).general.username << ", General.PassWord = " << (*conf).general.password << ", General.Mode = " << (*conf).general.mode << endl);
-    SYS_LOG_DBG("General.AutoOnline = " << ((*conf).general.auto_online ? "True" : "False") << ", General.AutoRedial = " << ((*conf).general.auto_redial ? "True" : "False") << endl);
+    SYS_LOG_DBG("General.UserName = " << (*conf).general.username << ", General.PassWord = " << (*conf).general.password << endl);
+    SYS_LOG_DBG(" General.AutoRedial = " << ((*conf).general.auto_redial ? "True" : "False") << endl);
     SYS_LOG_DBG("Remote.IP:Port = " << (*conf).remote.ip << ":" << (*conf).remote.port << ", Remote.UseBroadcast = " << ((*conf).remote.use_broadcast ? "True" : "False") << endl);
 
     if (!(*conf).remote.use_broadcast)
         SYS_LOG_DBG("Remote.MAC = " << hex_to_str((uint8_t *)&(*conf).remote.mac[0], 6, ':') << endl);
 
-    SYS_LOG_DBG("Local.NIC = " << (*conf).local.nic << ", Local.HostName = " << (*conf).local.hostname << ", Local.KernelVersion = " << (*conf).local.kernel_version << endl);
-
+    SYS_LOG_DBG("Local.NIC = " << (*conf).local.nic << endl);
     SYS_LOG_DBG("Local.EAPTimeout = " << (*conf).local.eap_timeout << ", Local.UDPTimeout = " << (*conf).local.udp_timeout << endl);
 
     try
