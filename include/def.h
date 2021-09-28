@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include <vector>
 
-#define configpath "./Drcom8021x.conf"
-
 struct drcom_config
 {
     struct config_general
