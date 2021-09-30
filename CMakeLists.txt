@@ -56,7 +56,7 @@ install(FILES drcom8021x.service drcom8021x.timer
 )
 install(FILES drcom8021x.conf
     CONFIGURATIONS Release
-    TYPE SYSCONF
+    DESTINATION /etc
 )
 
 
