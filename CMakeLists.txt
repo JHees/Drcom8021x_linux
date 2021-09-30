@@ -32,7 +32,7 @@ install(TARGETS drcom8021x
     LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/debug/lib
     ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/debug/lib
 )
-install(FILES drcom8021x.service drcom8021.timer
+install(FILES drcom8021x.service drcom8021x.timer
     CONFIGURATIONS Debug
     DESTINATION ${PROJECT_SOURCE_DIR}/debug/service
 
@@ -50,7 +50,7 @@ install(TARGETS drcom8021x
 )
 
 # release install
-install(FILES drcom8021x.service drcom8021.timer
+install(FILES drcom8021x.service drcom8021x.timer
     CONFIGURATIONS Release
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/system
 )
