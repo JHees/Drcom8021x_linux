@@ -93,7 +93,8 @@ public:
         get4pt(pt, conf.general.auto_redial, "General.AutoRedial");
         get4pt(pt, conf.remote.port, "Remote.Port");
         get4pt(pt, conf.remote.use_broadcast, "Remote.UseBroadcast");
-        get4pt(pt, conf.remote.mac, "Remote.MAC", str_mac_to_vec);
+        if (conf.remote.use_broadcast)
+            get4pt(pt, conf.remote.mac, "Remote.MAC", str_mac_to_vec);
         get4pt(pt, conf.local.eap_timeout, "Local.EAPTimeout");
         get4pt(pt, conf.local.udp_timeout, "Local.UDPTimeout");
 
@@ -139,7 +140,7 @@ public:
 
         if (getifaddrs(&ifaddr) < 0)
         {
-            throw drcomException("get_ip_address: getifaddrs failed"); //, errno);   //##
+            throw drcomException("get_ip_address: getifaddrs failed");
         }
         for (; ifaddr != NULL; ifaddr = ifaddr->ifa_next)
         {
@@ -167,15 +168,7 @@ private:
         U (*call)(T) = [](T v) -> U { return v; }) noexcept
     {
         auto opt = pt.get_optional<typename std::remove_reference<T>::type>(name);
-        if (opt.is_initialized())
-        {
-            conf = call(opt.value());
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        return opt.is_initialized() ? (conf = call(opt.value())), 1 : 0;
     }
 
     boost::property_tree::ptree pt;
