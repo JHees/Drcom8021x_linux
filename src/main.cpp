@@ -8,7 +8,6 @@
 
 #include "clipp.h"
 #include "function.h"
-#include "get_nic_addr.h"
 #include "utils.h"
 using namespace clipp;
 
@@ -28,7 +27,7 @@ int main(int argc, char **argv)
     auto cli = group(
         (required("-c", "--conf").set(selectedMode, mode::conf) & value("path", confpath)) % "path to config file"
         | ((option("-d", "--device") & value("interface", conf.local.nic)) % "name of network interface (default: eht0)",
-           (required("-s", "--server-ip").set(selectedMode, mode::cmd).if_missing([]() { std::cout << "need to set the ip address of authentication server\n"; }).call([&]() { conf.local.ip = get_ip_address(conf.local.nic), conf.local.mac = get_mac_address(conf.local.nic); }) & value("host", conf.remote.ip)) % "ip address of authentication server",
+           (required("-s", "--server-ip").set(selectedMode, mode::cmd).if_missing([]() { std::cout << "need to set the ip address of authentication server\n"; }).call([&]() { conf.local.ip = config::get_ip_address(conf.local.nic), conf.local.mac = config::get_mac_address(conf.local.nic); }) & value("host", conf.remote.ip)) % "ip address of authentication server",
            (option("-p", "--port") & integer("port", conf.remote.port)) % "port of authentication server (default port: 61440)",
            option("--no-redial").set(conf.general.auto_redial, false) % "do not reconnect after disconnection ",
            (option("--no-use-broadcast").set(conf.remote.use_broadcast, false) & value("mac", mac_buf).call([&]() { conf.remote.mac = str_mac_to_vec(mac_buf); })) % "do not broadcast and specify authentication server <mac> ",

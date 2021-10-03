@@ -12,21 +12,22 @@
 #include <sstream>
 #include <string.h>
 using namespace std;
-class drcomexception{
+class drcomException
+{
 public:
-	drcomexception(const std::string& message) : message(message) { }
-	drcomexception(const std::string& message, int err) {
+    drcomException(const std::string &message) : message(message){};
+    drcomException(const std::string &message, int err)
+    {
         std::stringstream stream;
         stream << message << ", errno = " << err << ", desc: " << strerror(err);
         this->message = stream.str();
     }
-	const char* what() const throw() { return message.c_str(); }
+    const char *what() const throw() { return message.c_str(); }
 
-    ~drcomexception() throw() {}
+    ~drcomException() throw(){};
 
 private:
-	std::string message;
-
+    std::string message;
 };
 
 #endif /* SRC_DRCOMEXCEPTION_H_ */

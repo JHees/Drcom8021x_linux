@@ -6,7 +6,7 @@ include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(PCAP REQUIRED)
-
+find_package(Boost REQUIRED)
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PCAP_INCLUDE_DIR}

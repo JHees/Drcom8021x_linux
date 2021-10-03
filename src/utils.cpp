@@ -17,8 +17,6 @@
 #ifndef __INCLUDE_UTILS__
 #define __INCLUDE_UTILS__
 
-
-#include "get_nic_addr.h"
 #include "md5.h"
 #include "log.h"
 #include <iostream>
@@ -149,7 +147,7 @@ std::vector<uint8_t> str_mac_to_vec(std::string mac)
 
 std::vector<uint8_t> test(std::string mac){
 
-	vector<uint8_t> ret;
+	std::vector<uint8_t> ret;
 	return ret;
 }
 
