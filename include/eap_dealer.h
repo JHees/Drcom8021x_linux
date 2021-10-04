@@ -9,10 +9,10 @@
 #ifndef SRC_EAPDEALER_H_
 #define SRC_EAPDEALER_H_
 
+#include "md5.h"
 #include "pcap_dealer.h"
 #include <iostream>
 #include <vector>
-
 #define DRCOM_EAP_FRAME_SIZE (0x60)
 #define EAP_MD5_VALUE_SIZE   (0x10)
 #define MAX_RETRY_TIME       2
@@ -60,6 +60,58 @@ private:
     std::vector<uint8_t> resp_id, resp_md5_id, key;
     std::vector<uint8_t> alive_data;
     std::vector<uint8_t> resp_md5_attach_key; // Recved from Request, Identity
+private:
+    std::vector<uint8_t> get_md5_digest(std::vector<uint8_t> &data)
+    {
+        md5_byte_t digest[16];
+        md5_state_t state;
+
+        md5_init(&state);
+        md5_append(&state, &data[0], (int)data.size());
+        md5_finish(&state, digest);
+
+        return std::vector<uint8_t>(digest, digest + 16);
+    }
+
+    std::vector<std::string> split_string(std::string src, char delimiter = ' ', bool append_last = true)
+    {
+        std::string::size_type pos = 0;
+        std::vector<std::string> ret;
+
+        while ((pos = src.find(delimiter)) != std::string::npos)
+        {
+            ret.push_back(src.substr(0, pos));
+            src = src.substr(pos + 1);
+        }
+
+        // the last element
+        if (append_last) ret.push_back(src);
+
+        return ret;
+    }
+
+    std::vector<uint8_t> str_ip_to_vec(std::string ip)
+    {
+        std::vector<uint8_t> ret(4, 0);
+
+        auto vec_addr = split_string(ip, '.');
+        if (vec_addr.size() < 4)
+            return ret;
+
+        unsigned long addr = (atol(vec_addr[0].c_str()) << 24) + (atol(vec_addr[1].c_str()) << 16) + (atol(vec_addr[2].c_str()) << 8) + atol(vec_addr[3].c_str());
+        addr = ntohl(addr);
+
+        memcpy(&ret[0], &addr, 4);
+
+        return ret;
+    }
+
+    std::vector<uint8_t> str_to_vec(std::string str)
+    {
+        std::vector<uint8_t> ret(str.length(), 0);
+        memcpy(&ret[0], &str[0], str.length());
+        return ret;
+    }
 };
 
 #endif /* SRC_EAPDEALER_H_ */

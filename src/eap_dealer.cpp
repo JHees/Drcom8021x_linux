@@ -10,7 +10,6 @@
 #include "eap_dealer.h"
 #include "log.h"
 #include "pcap_dealer.h"
-#include "utils.h"
 #include <net/ethernet.h>
 #include <netinet/in.h>
 #include <pcap.h>
@@ -288,7 +287,7 @@ int eap_dealer::response_md5_challenge(std::vector<uint8_t> gateway_mac)
 
             if (!notify.compare("userid error3"))
                 EAP_LOG_INFO("Tips: Account or password authentication fails, the system does not exist in this account or your account has arrears down." << std::endl);
-            logoff(gateway_mac); // Need to send a logoff, or the gateway will always send notification
+            // logoff(gateway_mac); // Need to send a logoff, or the gateway will always send notification
             return 1;            // Don't retry when notification
         }
 

@@ -14,10 +14,12 @@
 #include <boost/property_tree/exceptions.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <cstdlib>
 #include <errno.h>
 #include <exception>
 #include <iostream>
 #include <string.h>
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -28,7 +30,7 @@
 #include <sys/socket.h>
 
 #include "log.h"
-#include "utils.h"
+// #include "utils.h"
 using namespace std;
 
 struct drcom_config
@@ -100,11 +102,11 @@ public:
 
         SYS_LOG_INFO("Fetch NIC IP & MAC successfully." << std::endl);
         SYS_LOG_DBG("Local.NIC = " << conf.local.nic << endl);
-        SYS_LOG_INFO("Local.IP = " << conf.local.ip << ", Local.MAC = " << hex_to_str((uint8_t *)&conf.local.mac[0], 6, ':') << endl);
+        SYS_LOG_INFO("Local.IP = " << conf.local.ip << ", Local.MAC = " << vec_mac_to_str(conf.local.mac) << endl);
         SYS_LOG_DBG("General.UserName = " << conf.general.username << ", General.PassWord = " << conf.general.password << endl);
         SYS_LOG_DBG("General.AutoRedial = " << (conf.general.auto_redial ? "True" : "False") << endl);
         SYS_LOG_DBG("Remote.IP:Port = " << conf.remote.ip << ":" << conf.remote.port << ", Remote.UseBroadcast = " << (conf.remote.use_broadcast ? "True" : "False") << endl);
-        SYS_LOG_DBG("Remote.MAC = " << hex_to_str((uint8_t *)&conf.remote.mac[0], 6, ':') << endl);
+        SYS_LOG_DBG("Remote.MAC = " << vec_mac_to_str(conf.remote.mac) << endl);
         SYS_LOG_DBG("Local.EAPTimeout = " << conf.local.eap_timeout << ", Local.UDPTimeout = " << conf.local.udp_timeout << endl);
         SYS_LOG_INFO("Loaded config successfully." << std::endl);
     };
@@ -158,6 +160,27 @@ public:
         }
         return ip;
     }
+    static std::vector<uint8_t> str_mac_to_vec(const std::string &mac)
+    {
+        std::vector<uint8_t> ret;
+        auto p = mac.c_str();
+        for (; p < mac.end().base(); p += 3)
+            ret.push_back(std::strtol(p, nullptr, 16));
+        return ret;
+    }
+    std::string vec_mac_to_str(std::vector<uint8_t> mac)
+    {
+        constexpr const char table[] = "0123456789ABCDEF";
+        std::string ret;
+        for (auto i : mac)
+        {
+            ret += table[(i & 0xF0) >> 4];
+            ret += table[i & 0x0F];
+            ret += ':';
+        }
+        ret.pop_back();
+        return ret;
+    }
 
 private:
     template <class U, class T = U>
@@ -167,7 +190,11 @@ private:
         const std::string &name,
         U (*call)(T) = [](T v) -> U { return v; }) noexcept
     {
-        auto opt = pt.get_optional<typename std::remove_reference<T>::type>(name);
+        auto opt = pt.get_optional<
+            typename std::remove_const<
+                typename std::remove_reference<
+                    T>::type>::type>(name);
+
         return opt.is_initialized() ? (conf = call(opt.value())), 1 : 0;
     }
 

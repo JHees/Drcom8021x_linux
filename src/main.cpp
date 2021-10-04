@@ -8,7 +8,6 @@
 
 #include "clipp.h"
 #include "function.h"
-#include "utils.h"
 using namespace clipp;
 
 int main(int argc, char **argv)
@@ -30,7 +29,7 @@ int main(int argc, char **argv)
            (required("-s", "--server-ip").set(selectedMode, mode::cmd).if_missing([]() { std::cout << "need to set the ip address of authentication server\n"; }).call([&]() { conf.local.ip = config::get_ip_address(conf.local.nic), conf.local.mac = config::get_mac_address(conf.local.nic); }) & value("host", conf.remote.ip)) % "ip address of authentication server",
            (option("-p", "--port") & integer("port", conf.remote.port)) % "port of authentication server (default port: 61440)",
            option("--no-redial").set(conf.general.auto_redial, false) % "do not reconnect after disconnection ",
-           (option("--no-use-broadcast").set(conf.remote.use_broadcast, false) & value("mac", mac_buf).call([&]() { conf.remote.mac = str_mac_to_vec(mac_buf); })) % "do not broadcast and specify authentication server <mac> ",
+           (option("--no-use-broadcast").set(conf.remote.use_broadcast, false) & value("mac", mac_buf).call([&]() { conf.remote.mac = config::str_mac_to_vec(mac_buf); })) % "do not broadcast and specify authentication server <mac> ",
            (option("--eap-timeout") & integer("time", conf.local.eap_timeout)) % "timeout for 802.1x authentication (ms)(default: 1000)",
            (option("--udp-timeout") & integer("time", conf.local.udp_timeout)) % "timeout for udp (ms)(default: 2000)",
            value("username", conf.general.username),
