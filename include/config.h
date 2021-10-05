@@ -89,8 +89,15 @@ public:
             throw e;
         }
         get4pt(pt, conf.local.nic, "Local.NIC");
-        // conf.local.ip = get_ip_address(conf.local.nic);
-        conf.local.ip = "0.9.0.0";
+        try
+        {
+            conf.local.ip = get_ip_address(conf.local.nic);
+        }
+        catch (drcomException &e)
+        {
+            SYS_LOG_ERR("Failed on" << e.what() << std::endl);
+        }
+
         conf.local.mac = get_mac_address(conf.local.nic);
         get4pt(pt, conf.general.auto_redial, "General.AutoRedial");
         get4pt(pt, conf.remote.port, "Remote.Port");
@@ -168,9 +175,9 @@ public:
             ret.push_back(std::strtol(p, nullptr, 16));
         return ret;
     }
-    std::string vec_mac_to_str(std::vector<uint8_t> mac)
+    static std::string vec_mac_to_str(std::vector<uint8_t> mac)
     {
-        constexpr const char table[] = "0123456789ABCDEF";
+        constexpr const static char table[] = "0123456789ABCDEF";
         std::string ret;
         for (auto i : mac)
         {
